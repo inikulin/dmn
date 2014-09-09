@@ -5,6 +5,9 @@ var fs = require('fs-extra'),
     globby = require('globby'),
     spinner = require('char-spinner');
 
+//Expose node_modules for testing
+exports.NODE_MODULES = 'node_modules';
+
 //Utils
 function exit() {
     setTimeout(process.exit);
@@ -29,7 +32,7 @@ function createCleanGlobs() {
             return '*/' + pattern;
         }),
         indirectDeps = targets.map(function (pattern) {
-            return '**/node_modules/*/' + pattern;
+            return '**/' + exports.NODE_MODULES + '/*/' + pattern;
         });
 
     return directDeps.concat(indirectDeps);
@@ -75,7 +78,7 @@ var Log = {
 
 //API
 exports.clean = function (projectDir, callback) {
-    var nmDir = path.join(projectDir, './node_modules');
+    var nmDir = path.join(projectDir, './' + exports.NODE_MODULES);
 
     Log.silent = !!callback;
     callback = callback || exit;
