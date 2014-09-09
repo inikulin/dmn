@@ -44,6 +44,15 @@ describe('clean', function () {
         filesToClean.concat(filesToIgnore).forEach(fs.ensureFileSync);
         dirsToClean.concat(dirsToIgnore).forEach(fs.ensureDirSync);
 
+        filesToClean
+            .concat(dirsToClean)
+            .concat(filesToIgnore)
+            .concat(dirsToIgnore)
+            .forEach(function (f) {
+                console.log(fs.existsSync(f) + '-' + f);
+            });
+
+
         dmn.clean(tmpPath, function () {
             filesToClean.concat(dirsToClean).forEach(function (file) {
                 fs.existsSync(file).should.be.false;
