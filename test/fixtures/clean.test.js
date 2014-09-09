@@ -48,6 +48,7 @@ describe('clean', function () {
             fs.existsSync(f).should.eql(!/test/g.test(f));
         });
 
+        done();
 
         /*dmn.clean(tmpPath, function () {
          filesToClean.concat(dirsToClean).forEach(function (file) {
