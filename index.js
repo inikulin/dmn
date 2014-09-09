@@ -24,11 +24,11 @@ function getTargets() {
 }
 
 function createCleanGlobs() {
-    var ignores = getTargets(),
-        directDeps = ignores.map(function (pattern) {
+    var targets = getTargets(),
+        directDeps = targets.map(function (pattern) {
             return '*/' + pattern;
         }),
-        indirectDeps = ignores.map(function (pattern) {
+        indirectDeps = targets.map(function (pattern) {
             return '**/node_modules/*/' + pattern;
         });
 

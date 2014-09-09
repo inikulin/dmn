@@ -1,4 +1,5 @@
-[ "*.swo",
+[
+    "*.swo",
     "*.swp",
     ".DS_Store",
     ".coverage_data/",
