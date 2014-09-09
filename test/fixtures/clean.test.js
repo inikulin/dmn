@@ -1,20 +1,24 @@
 var fs = require('fs-extra'),
     path = require('path'),
     should = require('should'),
+    tmp = require('tmp'),
     dmn = require('../../index');
 
 
 describe('clean', function () {
-    var tmpPath = path.join(__dirname, '../tmp');
+    var cwd = null;
 
-    beforeEach(function () {
-        fs.ensureDirSync(tmpPath);
-        process.chdir(tmpPath);
+    beforeEach(function (done) {
+        tmp.dir({ mode: 0777}, function (err, tmpPath) {
+            cwd = tmpPath;
+            process.chdir(cwd);
+            done();
+        });
     });
 
     afterEach(function (done) {
         process.chdir(__dirname);
-        fs.remove(tmpPath, done);
+        fs.remove(cwd, done);
     });
 
     it('should clean targets and ignore everything else', function (done) {
@@ -44,7 +48,7 @@ describe('clean', function () {
         filesToClean.concat(filesToIgnore).forEach(fs.ensureFileSync);
         dirsToClean.concat(dirsToIgnore).forEach(fs.ensureDirSync);
 
-        dmn.clean(tmpPath, function () {
+        dmn.clean(cwd, function () {
             filesToClean.concat(dirsToClean).forEach(function (file) {
                 fs.existsSync(file).should.be.false;
             });
