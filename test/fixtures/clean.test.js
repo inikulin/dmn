@@ -26,9 +26,9 @@ describe('clean', function () {
                 'node_modules/yo/node_modules/yoyo/Changes'
             ],
             dirsToClean = [
-                'node_modules/yo/test',
+                'node_modules/yo/benchmark',
                 'node_modules/awesome_package/examples',
-                'node_modules/yo/node_modules/yoyo/test',
+                'node_modules/yo/node_modules/yoyo/benchmark',
                 'node_modules/yo/node_modules/yoyo/.coverage_data/'
             ],
             filesToIgnore = [
@@ -44,22 +44,16 @@ describe('clean', function () {
         filesToClean.concat(filesToIgnore).forEach(fs.ensureFileSync);
         dirsToClean.concat(dirsToIgnore).forEach(fs.ensureDirSync);
 
-        filesToClean.concat(filesToIgnore).forEach(function (f) {
-            fs.existsSync(f).should.eql(!/test/g.test(f));
+        dmn.clean(tmpPath, function () {
+            filesToClean.concat(dirsToClean).forEach(function (file) {
+                fs.existsSync(file).should.be.false;
+            });
+
+            filesToIgnore.concat(dirsToIgnore).forEach(function (file) {
+                fs.existsSync(file).should.be.true;
+            });
+
+            done();
         });
-
-        done();
-
-        /*dmn.clean(tmpPath, function () {
-         filesToClean.concat(dirsToClean).forEach(function (file) {
-         fs.existsSync(file).should.be.false;
-         });
-
-         filesToIgnore.concat(dirsToIgnore).forEach(function (file) {
-         fs.existsSync(file).should.be.true;
-         });
-
-         done();
-         });*/
     });
 });
