@@ -28,21 +28,26 @@ describe('clean', function () {
             dirsToClean = [
                 'node_modules/yo/benchmark',
                 'node_modules/awesome_package/examples',
-                'node_modules/yo/node_modules/yoyo/benchmark',
+                'node_modules/yo/node_modules/yoyo/test',
                 'node_modules/yo/node_modules/yoyo/.coverage_data/'
             ],
             filesToIgnore = [
+                '.npmignore',
                 'node_modules/yo/index.js',
                 'node_modules/yo/node_modules/yoyo/package.json',
                 'node_modules/awesome_package/Readme.md'
             ],
             dirsToIgnore = [
                 'node_modules/yo/lib',
-                'node_modules/yo/node_modules/yoyo/src'
+                'node_modules/yo/node_modules/yoyo/src',
+                'lib',
+                'test'
             ];
 
         filesToClean.concat(filesToIgnore).forEach(fs.ensureFileSync);
-        dirsToClean.concat(dirsToIgnore).forEach(fs.ensureDirSync);
+        dirsToClean.concat(dirsToIgnore).forEach(function (dir) {
+            fs.mkdirSync(dir, 0777);
+        });
 
         dmn.clean(tmpPath, function () {
             filesToClean.concat(dirsToClean).forEach(function (file) {

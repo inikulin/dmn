@@ -77,7 +77,6 @@ var Log = {
 exports.clean = function (projectDir, callback) {
     var nmDir = path.join(projectDir, './node_modules');
 
-    nmDir = path.resolve(nmDir);
     Log.silent = !!callback;
     callback = callback || exit;
 
