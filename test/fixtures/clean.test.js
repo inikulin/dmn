@@ -46,7 +46,7 @@ describe('clean', function () {
 
         filesToClean.concat(filesToIgnore).forEach(fs.ensureFileSync);
         dirsToClean.concat(dirsToIgnore).forEach(function (dir) {
-            fs.mkdirSync(dir, 0777);
+            fs.ensureDirSync(dir);
         });
 
         dmn.clean(tmpPath, function () {
