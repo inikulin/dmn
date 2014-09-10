@@ -26,11 +26,12 @@
     "test": "node test/run_tests.js"
   },
   "dependencies": {
-    "char-spinner": "1.0.1",
     "du": "0.1.0",
     "each-async": "1.0.0",
     "globby": "0.1.1",
-    "fs-extra": "0.11.1"
+    "fs-extra": "0.11.1",
+    "char-spinner": "^1.0.1",
+    "read": "^1.0.5"
   },
   "devDependencies": {
     "mocha": "1.21.4",

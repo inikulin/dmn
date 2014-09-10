@@ -49,7 +49,7 @@ describe('clean', function () {
             fs.ensureDirSync(dir);
         });
 
-        dmn.clean(tmpPath, function () {
+        dmn.clean(tmpPath, {silent: true, force: true}, function () {
             filesToClean.concat(dirsToClean).forEach(function (file) {
                 fs.existsSync(file).should.be.false;
             });

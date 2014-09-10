@@ -3,6 +3,7 @@ var fs = require('fs-extra'),
     du = require('du'),
     eachAsync = require('each-async'),
     globby = require('globby'),
+    read = require('read'),
     spinner = require('char-spinner');
 
 //Utils
@@ -19,11 +20,12 @@ function percentsLess(newVal, oldVal) {
 }
 
 function getTargets() {
-    var ignoresFile = path.join(__dirname, './targets.json');
-    return JSON.parse(fs.readFileSync(ignoresFile).toString());
+    var targetsFile = path.join(__dirname, './targets.json');
+
+    return JSON.parse(fs.readFileSync(targetsFile).toString());
 }
 
-function createCleanGlobs() {
+function createCleanTargets() {
     var targets = getTargets(),
         directDeps = targets.map(function (pattern) {
             return '*/' + pattern;
@@ -43,79 +45,134 @@ function deleteFiles(baseDir, files, callback) {
 }
 
 
-//Log
-var Log = {
-    silent: false,
-    spinnerInterval: null,
+function createCli(silent) {
+    var cli = {};
 
-    write: function (msg) {
-        if (!this.silent)
-            console.log(msg);
+    //Logging methods
+    var loggingMethods = {
+        ok: '\x1B[32mOK\x1B[0m: ',
+        info: '\x1B[33mINFO\x1B[0m: ',
+        error: '\x1B[31mERROR\x1B[0m: '
+    };
 
-        return this;
-    },
+    Object.keys(loggingMethods).forEach(function (name) {
+        cli[name] = function (msg) {
+            if (!silent)
+                console.log(loggingMethods[name] + msg);
 
-    spin: function () {
-        if (!this.silent)
-            this.spinnerInterval = spinner();
+            return cli;
+        };
+    });
 
-        return this;
-    },
+    //List
+    cli.list = function (arr) {
+        arr.forEach(function (item) {
+            console.log('\x1B[35m*\x1B[0m   ' + item);
+        });
 
-    stopSpin: function () {
-        if (this.spinnerInterval) {
-            clearInterval(this.spinnerInterval);
-            spinner.clear();
+        return cli;
+    };
+
+    //Confirm
+    cli.confirm = function (what, callback) {
+        var prompt = '\x1B[36mCONFIRM\x1B[0m: ' + what + '(Y/N):',
+            getAnswer = function () {
+                read({prompt: prompt, silent: false}, function (err, result) {
+                    result = result && result.trim().toLowerCase();
+
+                    if (result !== 'y' && result !== 'n')
+                        setTimeout(getAnswer);
+                    else
+                        callback(result === 'y');
+                });
+            };
+
+        getAnswer();
+    };
+
+    //Spinner
+    var spinnerInterval = null;
+
+    cli.spin = function (enable) {
+        if (!silent) {
+            if (enable)
+                spinnerInterval = spinner();
+
+            else if (spinnerInterval) {
+                clearInterval(spinnerInterval);
+                spinner.clear();
+            }
         }
 
-        return this;
-    }
-};
+        return cli;
+    };
+
+    return cli;
+}
 
 
 //API
-exports.clean = function (projectDir, callback) {
-    var nmDir = path.join(projectDir, './node_modules');
+exports.clean = function (projectDir, options, callback) {
+    var nmDir = path.join(projectDir, './node_modules'),
+        cli = createCli(options.silent);
 
-    Log.silent = !!callback;
     callback = callback || exit;
 
-    Log.write('Searching for items to clean...').spin();
+    cli.info('Searching for items to clean...').spin(true);
 
     if (!fs.existsSync(nmDir)) {
-        Log.stopSpin().write('No need for a clean-up: project doesn\'t have node_modules.');
+        cli.spin(false).ok('No need for a clean-up: project doesn\'t have node_modules.');
         callback();
 
         return;
     }
 
     du(nmDir, function (err, initialSize) {
-        globby(createCleanGlobs(), {cwd: nmDir}, function (err, files) {
+        globby(createCleanTargets(), {cwd: nmDir}, function (err, files) {
             if (!files.length) {
-                Log.stopSpin().write('No need for a clean-up: your dependencies are already perfect.');
+                cli.spin(false).ok('No need for a clean-up: your dependencies are already perfect.');
                 callback();
 
                 return;
             }
 
-            Log.stopSpin().write(files.length + ' items are set for deletion');
-            Log.write('Deleting...').spin();
+            var doClean = function () {
+                cli.info('Deleting...').spin(true);
 
-            deleteFiles(nmDir, files, function () {
-                du(nmDir, function (err, newSize) {
-                    Log.stopSpin().write([
-                        'Done! Your node_modules directory size was ',
-                        toKbString(initialSize),
-                        ' but now it\'s ',
-                        toKbString(newSize),
-                        ' which is ',
-                        percentsLess(newSize, initialSize),
-                        '% less.'
-                    ].join(''));
+                deleteFiles(nmDir, files, function () {
+                    du(nmDir, function (err, newSize) {
+                        cli.spin(false).ok([
+                            'Done! Your node_modules directory size was ',
+                            toKbString(initialSize),
+                            ' but now it\'s ',
+                            toKbString(newSize),
+                            ' which is ',
+                            percentsLess(newSize, initialSize),
+                            '% less.'
+                        ].join(''));
 
-                    callback();
+                        callback();
+                    });
                 });
-            });
+            };
+
+            cli.spin(false).info(files.length + ' item(s) are set for deletion');
+
+            if (options.list)
+                cli.list(files);
+
+            if (options.force)
+                doClean();
+            else {
+                cli.confirm('Delete items?', function (ok) {
+                    if (ok)
+                        doClean();
+                    else {
+                        cli.ok('Cleaning was canceled.');
+                        callback();
+                    }
+                });
+            }
         });
     })
 };
