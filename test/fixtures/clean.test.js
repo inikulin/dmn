@@ -1,8 +1,10 @@
 var fs = require('fs-extra'),
     path = require('path'),
     should = require('should'),
+    cli = require('../../lib/cli'),
     dmn = require('../../index');
 
+cli.silent = true;
 
 describe('clean', function () {
     this.timeout(99999);
