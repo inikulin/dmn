@@ -4,16 +4,43 @@ var fs = require('fs-extra'),
     cli = require('../../lib/cli'),
     dmn = require('../../index');
 
-cli.silent = true;
-
-//NOTE: ensureDir which can be safely passed to Array.forEach()
-//(learn more: http://www.wirfs-brock.com/allen/posts/166)
-function ensureDirSync(dir) {
-    fs.ensureDirSync(dir, 0777);
-}
 
 describe('clean', function () {
-    var tmpPath = path.join(__dirname, '../tmp');
+    var tmpPath = path.join(__dirname, '../tmp'),
+        filesToClean = [
+            'node_modules/yo/.travis.yml',
+            'node_modules/awesome_package/.gitignore',
+            'node_modules/awesome_package/Gruntfile.js',
+            'node_modules/yo/node_modules/yoyo/Makefile',
+            'node_modules/yo/node_modules/yoyo/Changes'
+        ],
+        dirsToClean = [
+            'node_modules/yo/benchmark',
+            'node_modules/awesome_package/examples',
+            'node_modules/yo/node_modules/yoyo/test',
+            'node_modules/yo/node_modules/yoyo/.coverage_data/'
+        ],
+        filesToIgnore = [
+            '.npmignore',
+            'node_modules/yo/index.js',
+            'node_modules/yo/node_modules/yoyo/package.json',
+            'node_modules/awesome_package/Readme.md'
+        ],
+        dirsToIgnore = [
+            'node_modules/yo/lib',
+            'node_modules/yo/node_modules/yoyo/src',
+            'lib',
+            'test'
+        ];
+
+
+    cli.silent = true;
+
+    //NOTE: ensureDir which can be safely passed to Array.forEach()
+    //(learn more: http://www.wirfs-brock.com/allen/posts/166)
+    function ensureDirSync(dir) {
+        fs.ensureDirSync(dir, 0777);
+    }
 
     beforeEach(function () {
         fs.ensureDirSync(tmpPath);
@@ -26,32 +53,6 @@ describe('clean', function () {
     });
 
     it('should clean targets and ignore everything else', function (done) {
-        var filesToClean = [
-                'node_modules/yo/.travis.yml',
-                'node_modules/awesome_package/.gitignore',
-                'node_modules/awesome_package/Gruntfile.js',
-                'node_modules/yo/node_modules/yoyo/Makefile',
-                'node_modules/yo/node_modules/yoyo/Changes'
-            ],
-            dirsToClean = [
-                'node_modules/yo/benchmark',
-                'node_modules/awesome_package/examples',
-                'node_modules/yo/node_modules/yoyo/test',
-                'node_modules/yo/node_modules/yoyo/.coverage_data/'
-            ],
-            filesToIgnore = [
-                '.npmignore',
-                'node_modules/yo/index.js',
-                'node_modules/yo/node_modules/yoyo/package.json',
-                'node_modules/awesome_package/Readme.md'
-            ],
-            dirsToIgnore = [
-                'node_modules/yo/lib',
-                'node_modules/yo/node_modules/yoyo/src',
-                'lib',
-                'test'
-            ];
-
         filesToClean.concat(filesToIgnore).forEach(fs.ensureFileSync);
         dirsToClean.concat(dirsToIgnore).forEach(ensureDirSync);
 
@@ -124,30 +125,8 @@ describe('clean', function () {
     });
 
     it('should cancel cleaning on user demand if "force" flag disabled', function (done) {
-        var projectFiles = [
-                '.npmignore',
-                'node_modules/yo/.travis.yml',
-                'node_modules/awesome_package/.gitignore',
-                'node_modules/awesome_package/Gruntfile.js',
-                'node_modules/yo/node_modules/yoyo/Makefile',
-                'node_modules/yo/node_modules/yoyo/Changes',
-                'node_modules/yo/index.js',
-                'node_modules/yo/node_modules/yoyo/package.json',
-                'node_modules/awesome_package/Readme.md'
-            ],
-            projectDirs = [
-                'node_modules/yo/benchmark',
-                'node_modules/awesome_package/examples',
-                'node_modules/yo/node_modules/yoyo/test',
-                'node_modules/yo/node_modules/yoyo/.coverage_data/',
-                'node_modules/yo/lib',
-                'node_modules/yo/node_modules/yoyo/src',
-                'lib',
-                'test'
-            ];
-
-        projectFiles.forEach(fs.ensureFileSync);
-        projectDirs.forEach(ensureDirSync);
+        filesToClean.concat(filesToIgnore).forEach(fs.ensureFileSync);
+        dirsToClean.concat(dirsToIgnore).forEach(ensureDirSync);
 
         cli.confirm = function (what, callback) {
             callback(false);
@@ -156,7 +135,34 @@ describe('clean', function () {
         dmn.clean(tmpPath, {force: false}).done(function (status) {
             status.should.eql('canceled');
 
-            projectFiles.concat(projectDirs).forEach(function (file) {
+            filesToClean
+                .concat(filesToIgnore)
+                .concat(dirsToClean)
+                .concat(dirsToIgnore)
+                .forEach(function (file) {
+                    fs.existsSync(file).should.be.true;
+                });
+
+            done();
+        });
+    });
+
+    it('should clean on user confirmation if "force" flag disabled', function (done) {
+        filesToClean.concat(filesToIgnore).forEach(fs.ensureFileSync);
+        dirsToClean.concat(dirsToIgnore).forEach(ensureDirSync);
+
+        cli.confirm = function (what, callback) {
+            callback(true);
+        };
+
+        dmn.clean(tmpPath, {force: false}).done(function (status) {
+            status.should.eql('cleaned');
+
+            filesToClean.concat(dirsToClean).forEach(function (file) {
+                fs.existsSync(file).should.be.false;
+            });
+
+            filesToIgnore.concat(dirsToIgnore).forEach(function (file) {
                 fs.existsSync(file).should.be.true;
             });
 
