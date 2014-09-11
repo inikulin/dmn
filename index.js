@@ -37,28 +37,66 @@ function createCleanTargets() {
     return directDeps.concat(indirectDeps);
 }
 
-function deleteFiles(baseDir, files, callback) {
+function rimrafMultiple(baseDir, files, callback) {
     eachAsync(files, function (filePath, i, next) {
         filePath = path.join(baseDir, filePath);
         fs.remove(filePath, next);
     }, callback);
 }
 
+function parseNpmIgnore(content) {
+    return content
+        .replace(/\r\n?/g, '\n')
+        .split('\n')
+        .map(function (str) {
+            return str.trim();
+        })
+        .filter(function (str) {
+            //NOTE: remove empty strings and comments
+            return str && str.indexOf('#') !== 0;
+        });
+}
 
+
+//CLI
 function createCli(silent) {
     var cli = {};
 
+    //Spinner
+    var spinnerInterval = null;
+
+    cli.spin = function () {
+        if (!silent)
+            spinnerInterval = spinner();
+
+        return cli;
+    };
+
+    cli.stopSpin = function () {
+        if (spinnerInterval) {
+            clearInterval(spinnerInterval);
+            spinner.clear();
+        }
+
+        return cli;
+    };
+
     //Logging methods
+    var log = function (msg) {
+        cli.stopSpin();
+
+        if (!silent)
+            console.log(msg);
+    };
+
     var loggingMethods = {
         ok: '\x1B[32mOK\x1B[0m: ',
-        info: '\x1B[33mINFO\x1B[0m: ',
-        error: '\x1B[31mERROR\x1B[0m: '
+        info: '\x1B[33mINFO\x1B[0m: '
     };
 
     Object.keys(loggingMethods).forEach(function (name) {
         cli[name] = function (msg) {
-            if (!silent)
-                console.log(loggingMethods[name] + msg);
+            log(loggingMethods[name] + msg);
 
             return cli;
         };
@@ -67,7 +105,7 @@ function createCli(silent) {
     //List
     cli.list = function (arr) {
         arr.forEach(function (item) {
-            console.log('\x1B[35m*\x1B[0m   ' + item);
+            log('   \x1B[35m*\x1B[0m ' + item);
         });
 
         return cli;
@@ -75,36 +113,22 @@ function createCli(silent) {
 
     //Confirm
     cli.confirm = function (what, callback) {
-        var prompt = '\x1B[36mCONFIRM\x1B[0m: ' + what + '(Y/N):',
-            getAnswer = function () {
-                read({prompt: prompt, silent: false}, function (err, result) {
-                    result = result && result.trim().toLowerCase();
+        var prompt = silent ? null : '\x1B[36mCONFIRM\x1B[0m: ' + what + '(Y/N):';
 
-                    if (result !== 'y' && result !== 'n')
-                        setTimeout(getAnswer);
-                    else
-                        callback(result === 'y');
-                });
-            };
+        var getAnswer = function () {
+            read({prompt: prompt, silent: silent}, function (err, result) {
+                result = result && result.trim().toLowerCase();
+
+                if (result !== 'y' && result !== 'n')
+                    setTimeout(getAnswer);
+                else
+                    callback(result === 'y');
+            });
+        };
+
+        cli.stopSpin();
 
         getAnswer();
-    };
-
-    //Spinner
-    var spinnerInterval = null;
-
-    cli.spin = function (enable) {
-        if (!silent) {
-            if (enable)
-                spinnerInterval = spinner();
-
-            else if (spinnerInterval) {
-                clearInterval(spinnerInterval);
-                spinner.clear();
-            }
-        }
-
-        return cli;
     };
 
     return cli;
@@ -118,10 +142,10 @@ exports.clean = function (projectDir, options, callback) {
 
     callback = callback || exit;
 
-    cli.info('Searching for items to clean...').spin(true);
+    cli.info('Searching for items to clean (it may take a while for big projects)...').spin();
 
     if (!fs.existsSync(nmDir)) {
-        cli.spin(false).ok('No need for a clean-up: project doesn\'t have node_modules.');
+        cli.ok('No need for a clean-up: project doesn\'t have node_modules.');
         callback();
 
         return;
@@ -130,18 +154,18 @@ exports.clean = function (projectDir, options, callback) {
     du(nmDir, function (err, initialSize) {
         globby(createCleanTargets(), {cwd: nmDir}, function (err, files) {
             if (!files.length) {
-                cli.spin(false).ok('No need for a clean-up: your dependencies are already perfect.');
+                cli.ok('No need for a clean-up: your dependencies are already perfect.');
                 callback();
 
                 return;
             }
 
             var doClean = function () {
-                cli.info('Deleting...').spin(true);
+                cli.info('Deleting...').spin();
 
-                deleteFiles(nmDir, files, function () {
+                rimrafMultiple(nmDir, files, function () {
                     du(nmDir, function (err, newSize) {
-                        cli.spin(false).ok([
+                        cli.ok([
                             'Done! Your node_modules directory size was ',
                             toKbString(initialSize),
                             ' but now it\'s ',
@@ -156,7 +180,7 @@ exports.clean = function (projectDir, options, callback) {
                 });
             };
 
-            cli.spin(false).info(files.length + ' item(s) are set for deletion');
+            cli.info(files.length + ' item(s) are set for deletion');
 
             if (options.list)
                 cli.list(files);
@@ -164,8 +188,8 @@ exports.clean = function (projectDir, options, callback) {
             if (options.force)
                 doClean();
             else {
-                cli.confirm('Delete items?', function (ok) {
-                    if (ok)
+                cli.confirm('Delete items?', function (yes) {
+                    if (yes)
                         doClean();
                     else {
                         cli.ok('Cleaning was canceled.');
@@ -176,3 +200,76 @@ exports.clean = function (projectDir, options, callback) {
         });
     })
 };
+
+
+exports.gen = function (projectDir, options, callback) {
+    var ignoreFile = path.join(projectDir, './.npmignore'),
+        cli = createCli(options.silent);
+
+    callback = callback || exit;
+
+    cli.info('Reading and parsing .npmignore file...').spin();
+
+    fs.ensureFile(ignoreFile, function () {
+        fs.readFile(ignoreFile, function (err, content) {
+            content = content.toString();
+
+            //NOTE: yep, so selfish...
+            content = content || '# Generated by dmn (https://github.com/inikulin/dmn)';
+
+            var alreadyIgnored = parseNpmIgnore(content);
+
+            cli.info('Searching for items to ignore...').spin();
+
+            var ignores = [];
+
+            eachAsync(getTargets(), function (pattern, i, next) {
+                globby(pattern, {cwd: projectDir}, function (err, files) {
+                    if (files.length)
+                        ignores.push(pattern);
+
+                    next();
+                });
+
+            }, function () {
+                //NOTE: skip already ignored patterns
+                ignores = ignores.filter(function (pattern) {
+                    return alreadyIgnored.indexOf(pattern) === -1;
+                });
+
+                if (!ignores.length) {
+                    cli.ok('Unignored patterns was not found. Your .npmignore file is already perfect.');
+                    callback();
+
+                    return;
+                }
+
+                cli.info('Following patterns will be added to .npmignore file:');
+                cli.list(ignores);
+
+                var savePatterns = function () {
+                    content += '\r\n\r\n' + ignores.join('\r\n');
+
+                    fs.writeFile(ignoreFile, content, function () {
+                        cli.ok('.npmignore file was updated.');
+                        callback();
+                    });
+                };
+
+                if (options.force)
+                    savePatterns();
+                else {
+                    cli.confirm('Save?', function (yes) {
+                        if (yes)
+                            savePatterns();
+                        else {
+                            cli.ok('.npmignore file update was canceled.');
+                            callback();
+                        }
+                    });
+                }
+            });
+        });
+    });
+};
+
