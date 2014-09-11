@@ -31,7 +31,8 @@
     "globby": "0.1.1",
     "fs-extra": "0.11.1",
     "char-spinner": "^1.0.1",
-    "read": "^1.0.5"
+    "read": "^1.0.5",
+    "q": "^1.0.1"
   },
   "devDependencies": {
     "mocha": "1.21.4",

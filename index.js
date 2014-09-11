@@ -4,9 +4,12 @@ var fs = require('fs-extra'),
     eachAsync = require('each-async'),
     globby = require('globby'),
     read = require('read'),
-    spinner = require('char-spinner');
+    spinner = require('char-spinner'),
+    Q = require('q');
+
 
 //Utils
+//-------------------------------------------------------------------------------------------------------------
 function exit() {
     setTimeout(process.exit);
 }
@@ -59,6 +62,7 @@ function parseNpmIgnore(content) {
 
 
 //CLI
+//-------------------------------------------------------------------------------------------------------------
 function createCli(silent) {
     var cli = {};
 
@@ -135,73 +139,110 @@ function createCli(silent) {
 }
 
 
-//API
-exports.clean = function (projectDir, options, callback) {
-    var nmDir = path.join(projectDir, './node_modules'),
-        cli = createCli(options.silent);
+//Clean
+//-------------------------------------------------------------------------------------------------------------
+function deleteFoundFiles(cli, nmDir, filesToDelete, initialSize) {
+    var newSize = 0;
 
-    callback = callback || exit;
+    cli.info('Deleting...').spin();
+
+    return Q
+
+        .Promise(function (done) {
+            //NOTE: delete files
+            rimrafMultiple(nmDir, filesToDelete, done);
+        })
+
+        .then(function () {
+            //NOTE: get new size of the node_modules dir
+            return Q.Promise(function (done) {
+                du(nmDir, function (err, size) {
+                    newSize = size;
+                    done();
+                });
+            });
+        })
+
+        .then(function () {
+            cli.ok([
+                'Done! Your node_modules directory size was ', toKbString(initialSize), ' but now it\'s ',
+                toKbString(newSize), ' which is ', percentsLess(newSize, initialSize), '% less.'
+            ].join(''));
+        });
+}
+
+function confirmClean(cli, nmDir, filesToDelete, initialSize) {
+    return Q
+
+        .Promise(function (done) {
+            cli.confirm('Delete items?', done);
+        })
+
+        .then(function (yes) {
+            if (yes)
+                return deleteFoundFiles(cli, nmDir, filesToDelete, initialSize);
+
+            cli.ok('Cleaning was canceled.');
+        });
+}
+
+//Api
+exports.clean = function (projectDir, options) {
+    var nmDir = path.join(projectDir, './node_modules'),
+        cli = createCli(options.silent),
+        initialSize = 0,
+        filesToDelete = null;
 
     cli.info('Searching for items to clean (it may take a while for big projects)...').spin();
 
     if (!fs.existsSync(nmDir)) {
         cli.ok('No need for a clean-up: project doesn\'t have node_modules.');
-        callback();
 
-        return;
+        return Q.done();
     }
 
-    du(nmDir, function (err, initialSize) {
-        globby(createCleanTargets(), {cwd: nmDir}, function (err, files) {
-            if (!files.length) {
-                cli.ok('No need for a clean-up: your dependencies are already perfect.');
-                callback();
+    return Q
 
+        //NOTE: get initial size of the node_modules dir
+        .Promise(function (done) {
+            du(nmDir, function (err, size) {
+                initialSize = size;
+                done();
+            });
+        })
+
+        .then(function () {
+            //NOTE: find matching files
+            return Q.Promise(function (done) {
+                globby(createCleanTargets(), {cwd: nmDir}, function (err, files) {
+                    filesToDelete = files;
+                    done();
+                });
+            });
+        })
+
+        .then(function () {
+            if (!filesToDelete.length) {
+                cli.ok('No need for a clean-up: your dependencies are already perfect.');
                 return;
             }
 
-            var doClean = function () {
-                cli.info('Deleting...').spin();
-
-                rimrafMultiple(nmDir, files, function () {
-                    du(nmDir, function (err, newSize) {
-                        cli.ok([
-                            'Done! Your node_modules directory size was ',
-                            toKbString(initialSize),
-                            ' but now it\'s ',
-                            toKbString(newSize),
-                            ' which is ',
-                            percentsLess(newSize, initialSize),
-                            '% less.'
-                        ].join(''));
-
-                        callback();
-                    });
-                });
-            };
-
-            cli.info(files.length + ' item(s) are set for deletion');
+            cli.info(filesToDelete.length + ' item(s) are set for deletion');
 
             if (options.list)
-                cli.list(files);
+                cli.list(filesToDelete);
 
             if (options.force)
-                doClean();
-            else {
-                cli.confirm('Delete items?', function (yes) {
-                    if (yes)
-                        doClean();
-                    else {
-                        cli.ok('Cleaning was canceled.');
-                        callback();
-                    }
-                });
-            }
+                return deleteFoundFiles(cli, nmDir, filesToDelete, initialSize);
+
+            return confirmClean(cli, nmDir, filesToDelete, initialSize);
         });
-    })
+
 };
 
 
+//Generate
+//-------------------------------------------------------------------------------------------------------------
 exports.gen = function (projectDir, options, callback) {
     var ignoreFile = path.join(projectDir, './.npmignore'),
         cli = createCli(options.silent);

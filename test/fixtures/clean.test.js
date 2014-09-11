@@ -5,6 +5,8 @@ var fs = require('fs-extra'),
 
 
 describe('clean', function () {
+    this.timeout(99999);
+
     var tmpPath = path.join(__dirname, '../tmp');
 
     beforeEach(function () {
@@ -49,7 +51,7 @@ describe('clean', function () {
             fs.ensureDirSync(dir);
         });
 
-        dmn.clean(tmpPath, {silent: true, force: true}, function () {
+        dmn.clean(tmpPath, {silent: true, force: true}).then(function () {
             filesToClean.concat(dirsToClean).forEach(function (file) {
                 fs.existsSync(file).should.be.false;
             });
