@@ -6,6 +6,8 @@ var fs = require('fs-extra'),
 
 
 describe('clean', function () {
+    this.timeout(99999);
+
     var tmpPath = path.join(__dirname, '../tmp'),
         filesToClean = [
             'node_modules/yo/.travis.yml',
@@ -57,7 +59,7 @@ describe('clean', function () {
         dirsToClean.concat(dirsToIgnore).forEach(ensureDirSync);
 
         dmn.clean(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('cleaned');
+            status.should.eql('DONE: cleaned');
 
             filesToClean.concat(dirsToClean).forEach(function (file) {
                 fs.existsSync(file).should.be.false;
@@ -86,7 +88,7 @@ describe('clean', function () {
         projectDirs.forEach(ensureDirSync);
 
         dmn.clean(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('no-deps');
+            status.should.eql('DONE: no-deps');
 
             projectFiles.concat(projectDirs).forEach(function (file) {
                 fs.existsSync(file).should.be.true;
@@ -114,7 +116,7 @@ describe('clean', function () {
         projectDirs.forEach(ensureDirSync);
 
         dmn.clean(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('already-perfect');
+            status.should.eql('DONE: already-perfect');
 
             projectFiles.concat(projectDirs).forEach(function (file) {
                 fs.existsSync(file).should.be.true;
@@ -133,7 +135,7 @@ describe('clean', function () {
         };
 
         dmn.clean(tmpPath, {force: false}).done(function (status) {
-            status.should.eql('canceled');
+            status.should.eql('DONE: canceled');
 
             filesToClean
                 .concat(filesToIgnore)
@@ -156,7 +158,7 @@ describe('clean', function () {
         };
 
         dmn.clean(tmpPath, {force: false}).done(function (status) {
-            status.should.eql('cleaned');
+            status.should.eql('DONE: cleaned');
 
             filesToClean.concat(dirsToClean).forEach(function (file) {
                 fs.existsSync(file).should.be.false;

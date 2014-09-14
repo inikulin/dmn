@@ -52,7 +52,7 @@ describe('gen', function () {
         fs.writeFileSync('.npmignore', srcIgnoreFile);
 
         dmn.gen(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('saved');
+            status.should.eql('DONE: saved');
 
             var ignoreFile = fs.readFileSync('.npmignore').toString();
 
@@ -83,7 +83,7 @@ describe('gen', function () {
         projectDirs.forEach(ensureDirSync);
 
         dmn.gen(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('saved');
+            status.should.eql('DONE: saved');
 
             var ignoreFile = fs.readFileSync('.npmignore').toString();
 
@@ -118,7 +118,7 @@ describe('gen', function () {
         fs.writeFileSync('.npmignore', srcIgnoreFile);
 
         dmn.gen(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('already-perfect');
+            status.should.eql('DONE: already-perfect');
 
             var ignoreFile = fs.readFileSync('.npmignore').toString();
 
@@ -148,7 +148,7 @@ describe('gen', function () {
         };
 
         dmn.gen(tmpPath, {force: false}).done(function (status) {
-            status.should.eql('canceled');
+            status.should.eql('DONE: canceled');
 
             var ignoreFile = fs.readFileSync('.npmignore').toString();
 
@@ -178,7 +178,7 @@ describe('gen', function () {
         };
 
         dmn.gen(tmpPath, {force: false}).done(function (status) {
-            status.should.eql('saved');
+            status.should.eql('DONE: saved');
 
             var ignoreFile = fs.readFileSync('.npmignore').toString();
 
