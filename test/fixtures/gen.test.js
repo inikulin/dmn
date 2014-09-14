@@ -51,8 +51,8 @@ describe('gen', function () {
         projectDirs.forEach(ensureDirSync);
         fs.writeFileSync('.npmignore', srcIgnoreFile);
 
-        dmn.gen(tmpPath, {force: true}, function (status) {
-            status.should.eql('updated');
+        dmn.gen(tmpPath, {force: true}).done(function (status) {
+            status.should.eql('saved');
 
             var ignoreFile = fs.readFileSync('.npmignore').toString();
 
@@ -82,8 +82,8 @@ describe('gen', function () {
 
         projectDirs.forEach(ensureDirSync);
 
-        dmn.gen(tmpPath, {force: true}, function (status) {
-            status.should.eql('updated');
+        dmn.gen(tmpPath, {force: true}).done(function (status) {
+            status.should.eql('saved');
 
             var ignoreFile = fs.readFileSync('.npmignore').toString();
 
@@ -117,7 +117,7 @@ describe('gen', function () {
         projectDirs.forEach(ensureDirSync);
         fs.writeFileSync('.npmignore', srcIgnoreFile);
 
-        dmn.gen(tmpPath, {force: true}, function (status) {
+        dmn.gen(tmpPath, {force: true}).done(function (status) {
             status.should.eql('already-perfect');
 
             var ignoreFile = fs.readFileSync('.npmignore').toString();
@@ -147,7 +147,7 @@ describe('gen', function () {
             callback(false);
         };
 
-        dmn.gen(tmpPath, {force: false}, function (status) {
+        dmn.gen(tmpPath, {force: false}).done(function (status) {
             status.should.eql('canceled');
 
             var ignoreFile = fs.readFileSync('.npmignore').toString();
@@ -177,8 +177,8 @@ describe('gen', function () {
             callback(true);
         };
 
-        dmn.gen(tmpPath, {force: false}, function (status) {
-            status.should.eql('updated');
+        dmn.gen(tmpPath, {force: false}).done(function (status) {
+            status.should.eql('saved');
 
             var ignoreFile = fs.readFileSync('.npmignore').toString();
 
@@ -192,6 +192,5 @@ describe('gen', function () {
 
             done();
         });
-
     });
 });
