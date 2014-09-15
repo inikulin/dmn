@@ -59,7 +59,7 @@ describe('clean', function () {
         dirsToClean.concat(dirsToIgnore).forEach(ensureDirSync);
 
         dmn.clean(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('DONE: cleaned');
+            status.should.eql('OK: cleaned');
 
             filesToClean.concat(dirsToClean).forEach(function (file) {
                 fs.existsSync(file).should.be.false;
@@ -88,7 +88,7 @@ describe('clean', function () {
         projectDirs.forEach(ensureDirSync);
 
         dmn.clean(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('DONE: no-deps');
+            status.should.eql('OK: no-deps');
 
             projectFiles.concat(projectDirs).forEach(function (file) {
                 fs.existsSync(file).should.be.true;
@@ -116,7 +116,7 @@ describe('clean', function () {
         projectDirs.forEach(ensureDirSync);
 
         dmn.clean(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('DONE: already-perfect');
+            status.should.eql('OK: already-perfect');
 
             projectFiles.concat(projectDirs).forEach(function (file) {
                 fs.existsSync(file).should.be.true;
@@ -135,7 +135,7 @@ describe('clean', function () {
         };
 
         dmn.clean(tmpPath, {force: false}).done(function (status) {
-            status.should.eql('DONE: canceled');
+            status.should.eql('OK: canceled');
 
             filesToClean
                 .concat(filesToIgnore)
@@ -158,7 +158,7 @@ describe('clean', function () {
         };
 
         dmn.clean(tmpPath, {force: false}).done(function (status) {
-            status.should.eql('DONE: cleaned');
+            status.should.eql('OK: cleaned');
 
             filesToClean.concat(dirsToClean).forEach(function (file) {
                 fs.existsSync(file).should.be.false;
