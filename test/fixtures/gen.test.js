@@ -32,6 +32,7 @@ describe('gen', function () {
                 'Gulpfile.js',
                 'index.js',
                 'package.json',
+                'HISTORY',
                 'Makefile'
             ],
             projectDirs = [
@@ -56,17 +57,36 @@ describe('gen', function () {
 
             var ignoreFile = fs.readFileSync('.npmignore').toString();
 
-            ignoreFile.should.eql([
-                '.travis.yml',
-                '!Makefile',
-                'test/',
-                '!benchmark/',
-                '',
-                '.npmignore',
-                'Gulpfile.js',
-                'coverage/',
-                'gulpfile.js' //TODO check if it windows specific
-            ].join('\r\n'));
+            //NOTE: see comments in findPatternsToAdd() in ../../lib/gen.js
+            if (process.platform === 'win32') {
+                ignoreFile.should.eql([
+                    '.travis.yml',
+                    '!Makefile',
+                    'test/',
+                    '!benchmark/',
+                    '',
+                    '.npmignore',
+                    'coverage/',
+                    'Gulpfile.js',
+                    'gulpfile.js',
+                    'HISTORY',
+                    'History'
+                ].join('\r\n'));
+            }
+
+            else {
+                ignoreFile.should.eql([
+                    '.travis.yml',
+                    '!Makefile',
+                    'test/',
+                    '!benchmark/',
+                    '',
+                    '.npmignore',
+                    'coverage/',
+                    'Gulpfile.js',
+                    'HISTORY'
+                ].join('\r\n'));
+            }
 
             done();
         });
