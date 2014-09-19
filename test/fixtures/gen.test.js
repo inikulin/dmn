@@ -44,7 +44,8 @@ describe('gen', function () {
             srcIgnoreFile = [
                 '.travis.yml',
                 '!Makefile',
-                'test/',
+                'test',
+                'example/',
                 '!benchmark/'
             ].join('\r\n');
 
@@ -62,7 +63,8 @@ describe('gen', function () {
                 ignoreFile.should.eql([
                     '.travis.yml',
                     '!Makefile',
-                    'test/',
+                    'test',
+                    'example/',
                     '!benchmark/',
                     '',
                     '.npmignore',

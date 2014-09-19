@@ -54,12 +54,8 @@ var opts = nopt(OPTIONS, OPTIONS_SHORTHANDS, process.argv, 2),
             return cmds.indexOf(arg) === pos && (arg === 'clean' || arg === 'gen');
         });
 
-if (!cmds.length) {
-    cli.log(USAGE);
-    exit(0);
-}
 
-//Here we go...
+//Command sequence
 function whenError(err) {
     cli.error(err);
     exit(1);
@@ -79,4 +75,10 @@ function runCommand() {
     dmn[cmd](process.cwd(), opts).done(whenDone, whenError);
 }
 
-runCommand();
+//Here we go...
+if (!cmds.length) {
+    cli.log(USAGE);
+    exit(0);
+}
+else
+    runCommand();
