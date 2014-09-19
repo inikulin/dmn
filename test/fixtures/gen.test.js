@@ -80,7 +80,8 @@ describe('gen', function () {
                 ignoreFile.should.eql([
                     '.travis.yml',
                     '!Makefile',
-                    'test/',
+                    'test',
+                    'example/',
                     '!benchmark/',
                     '',
                     '.npmignore',
