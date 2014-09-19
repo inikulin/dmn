@@ -58,6 +58,8 @@ var opts = nopt(OPTIONS, OPTIONS_SHORTHANDS, process.argv, 2),
 //Command sequence
 function whenError(err) {
     cli.error(err);
+    cli.error('This should never happen!');
+    cli.error('Please submit an issue to: https://github.com/inikulin/dmn/issues');
     exit(1);
 }
 
