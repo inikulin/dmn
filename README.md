@@ -18,3 +18,18 @@ So:
 ```
 $ npm install -g dmn
 ```
+
+##Usage
+```
+  Usage: dmn <command(s)> [options]
+        
+  Commands:
+      gen         :  generate (or add items to existing) .npmignore file. 
+                     To keep item in release package just prepend it's
+                     patten with '!'.
+      clean       :  clean project's node_modules from useless clutter
+
+  Options:
+      -f, -force  :  don't ask for command confirmation
+      -l, -list   :  list files that will be deleted by "clean" command
+```
