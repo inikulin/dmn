@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="https://raw.github.com/inikulin/dmn/master/logo.png" alt="dmn" />
-</p>
+#dmn
 [![Build Status](http://img.shields.io/travis/inikulin/dmn.svg?style=flat-square)](https://travis-ci.org/inikulin/dmn)
 
 *Because I don't need your tests in my production!*
@@ -13,7 +11,7 @@ So:
 *  If you distribute your project to end-user not via `npm` **then bloated dependencies make you unhappy**.
 *  If you are a good person who cares about others **then bloated dependencies make you unhappy**. Just imagine how much useless stuff which will never be used by anyone is fetched, served and stored by `npm` and e.g. `TravisCI`. Imagine how thousands of small useless files impacts installation time of your package. 
 
-##dmn
+-----------------------------------------------------------------
 **dmn** (*"<b>d</b>ependency <b>m</b>i<b>n</b>ifier" or "<b>d</b>amn <b>m</b>issing .<b>n</b>pmignore" or "<b>d</b>mn is a <b>m</b>eaningless <b>n</b>ame"*) - is a command line tool which will help you deal with bloated dependencies. It can clean your `node_modules` from stuff which you will never need. And it can gracefully generate `.npmignore` file for your project. Both operations based on [list of ignore targets](https://github.com/inikulin/dmn/blob/master/lib/targets.js). If I missed something in it then just send me a pull request.
 
 ##Install
