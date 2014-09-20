@@ -24,9 +24,9 @@ $ npm install -g dmn
   Usage: dmn <command(s)> [options]
         
   Commands:
-      gen         :  generate (or add items to existing) .npmignore file. 
+      gen         :  generate (or add items to existing) .npmignore file 
                      To keep item in release package just prepend it's
-                     patten with '!'.
+                     pattern with '!'.
       clean       :  clean project's node_modules from useless clutter
 
   Options:
