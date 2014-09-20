@@ -6,3 +6,5 @@
 .npmignore
 .travis.yml
 test/
+
+logo.png

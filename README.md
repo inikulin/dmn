@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="https://raw.github.com/inikulin/dmn/master/logo.png" alt="dmn" />
+</p>
 [![Build Status](http://img.shields.io/travis/inikulin/dmn.svg?style=flat-square)](https://travis-ci.org/inikulin/dmn)
 
 *Because I don't need your tests in my production!*
