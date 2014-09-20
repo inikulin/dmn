@@ -6,14 +6,12 @@ var fs = require('fs-extra'),
 
 
 describe('clean', function () {
-    this.timeout(99999);
-
     var tmpPath = path.join(__dirname, '../tmp'),
         filesToClean = [
             'node_modules/yo/.travis.yml',
             'node_modules/awesome_package/.gitignore',
             'node_modules/awesome_package/Gruntfile.js',
-            'node_modules/yo/node_modules/yoyo/Makefile',
+            'node_modules/yo/node_modules/yoyo/yo.pyc',
             'node_modules/yo/node_modules/yoyo/Changes'
         ],
         dirsToClean = [
