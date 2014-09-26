@@ -1,5 +1,5 @@
 #dmn
-[![Build Status](http://img.shields.io/travis/inikulin/dmn.svg?style=flat-square)](https://travis-ci.org/inikulin/dmn)
+[![Build Status](https://api.travis-ci.org/inikulin/dmn.svg)](https://travis-ci.org/inikulin/dmn)
 
 *Because I don't need your tests in my production!*
 
