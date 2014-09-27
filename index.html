@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>dmn by inikulin</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>dmn</h1>
+        <h2>Node package dependency cleaner and .npmignore file generator.</h2>
+        <a href="https://github.com/inikulin/dmn" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="dmn" class="anchor" href="#dmn"><span class="octicon octicon-link"></span></a>dmn</h1>
+
+<p><em>Because I don't need your tests in my production!</em></p>
+
+<p>Packages in <code>npm</code> are bloated with stuff which you will never ever use, like build files and different kinds of test data. Guys from <code>npm</code> provided us with <code>.npmignore</code> files, but seems like almost no one uses it. Please, stop publishing your development stuff to <code>npm</code>. If I would like to run your tests and start hacking on your project I will do <code>git clone</code> not <code>npm install</code>. Once our project has increased in size in 13Mb and this is just because of single test data file which was used by one of our dependencies (true story). Poor testing farm...</p>
+
+<p>So:</p>
+
+<ul>
+<li> If you spread installed packages across multiple machines in your environment <strong>then bloated dependencies make you unhappy</strong>. </li>
+<li> If you get your local repo synced (e.g using Dropbox or Google Drive) <strong>then bloated dependencies make you unhappy</strong> (it takes so goddamn long to sync a big amount of smal useless files). </li>
+<li> If you distribute your project to end-user not via <code>npm</code> <strong>then bloated dependencies make you unhappy</strong>.</li>
+<li> If you are a good person who cares about others <strong>then bloated dependencies make you unhappy</strong>. Just imagine how much useless stuff which will never be used by anyone is fetched, served and stored by <code>npm</code> and e.g. <code>TravisCI</code>. Imagine how thousands of small useless files impacts installation time of your package. </li>
+</ul><hr><p><strong>dmn</strong> (<em>"<b>d</b>ependency <b>m</b>i<b>n</b>ifier" or "<b>d</b>amn <b>m</b>issing .<b>n</b>pmignore" or "<b>d</b>mn is a <b>m</b>eaningless <b>n</b>ame"</em>) - is a command line tool which will help you deal with bloated dependencies. It can clean your <code>node_modules</code> from stuff which you will never need. And it can gracefully generate <code>.npmignore</code> file for your project. Both operations based on <a href="https://github.com/inikulin/dmn/blob/master/lib/targets.js">list of ignore targets</a>. Send me a pull request If I missed something in this list.</p>
+
+<h2>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<pre><code>$ npm install -g dmn
+</code></pre>
+
+<h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<pre><code>  Usage: dmn &lt;command(s)&gt; [options]
+
+  Commands:
+      gen         :  generate (or add items to existing) .npmignore file 
+                     To keep item in release package just prepend it's
+                     pattern with '!'.
+      clean       :  clean project's node_modules from useless clutter
+
+  Options:
+      -f, -force  :  don't ask for command confirmation
+      -l, -list   :  list files that will be deleted by "clean" command
+</code></pre>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<p><em>Generate .npmignore for your project:</em></p>
+
+<pre><code>$ cd &lt;to_your_project&gt;
+$ dmn gen --f
+</code></pre>
+
+<p><em>Or do this before publishing:</em></p>
+
+<pre><code>$ dmn gen --f &amp;&amp; npm publish
+</code></pre>
+
+<p><em>Or even better:</em></p>
+
+<pre><code>$ dmn gen --f &amp;&amp; git add .npmignore &amp;&amp; git commit ...
+</code></pre>
+
+<p><em>Clean your project's dependencies:</em></p>
+
+<pre><code>$ cd &lt;to_your_project&gt; 
+$ dmn clean --f
+</code></pre>
+
+<p><em>Clean newly installed dependency:</em></p>
+
+<pre><code>$ npm install --save &lt;new_dependency&gt; &amp;&amp; dmn clean --f
+</code></pre>
+
+<p><em>Install dependencies then clean them for cloned repo:</em></p>
+
+<pre><code>$ git clone https://github.com/&lt;username&gt;/&lt;reponame&gt;
+$ cd &lt;reponame&gt; &amp;&amp; npm install &amp;&amp; dmn clean --f
+</code></pre>
+
+<h2>
+<a name="questions-or-suggestions" class="anchor" href="#questions-or-suggestions"><span class="octicon octicon-link"></span></a>Questions or suggestions?</h2>
+
+<p>If you have any questions, please feel free to create an issue <a href="https://github.com/inikulin/ineed/issues">here on github</a>.</p>
+
+<h2>
+<a name="author" class="anchor" href="#author"><span class="octicon octicon-link"></span></a>Author</h2>
+
+<p><a href="https://github.com/inikulin">Ivan Nikulin</a> (<a href="mailto:ifaaan@gmail.com">ifaaan@gmail.com</a>)</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/inikulin/dmn/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/inikulin/dmn/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/inikulin/dmn"></a> is maintained by <a href="https://github.com/inikulin">inikulin</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
