@@ -1,4 +1,4 @@
-//Just the easy way to update targets list and keep it nice and sorted
+//Just an easy way to update targets list and keep it nice and sorted
 //Usage: node add_targets target1 target2 ...
 
 var path = require('path'),
