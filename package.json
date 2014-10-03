@@ -3,7 +3,7 @@
   "description": "Node package dependency cleaner and .npmignore file generator.",
   "version": "1.0.5",
   "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
-  "homepage": "http://inikulin.github.io/dmn/", 
+  "homepage": "http://inikulin.github.io/dmn/",
   "keywords": [
     "cleaner",
     "clutter",
@@ -28,18 +28,23 @@
     "url": "git://github.com/inikulin/dmn.git"
   },
   "scripts": {
-    "test": "node test/run_tests.js"
+    "test": "./node_modules/.bin/gnode test/run_tests.js"
   },
   "dependencies": {
-    "char-spinner": "^1.0.1",
+    "char-spinner": "1.0.1",
     "du": "0.1.0",
     "fs-extra": "0.11.1",
     "globby": "0.1.1",
     "nopt": "3.0.1",
     "q": "1.0.1",
-    "read": "1.0.5"
+    "read": "1.0.5",
+    "gnode": "0.1.0",
+    "co": "3.1.0",
+    "co-fs-extra": "0.0.2",
+    "thunkify": "2.1.2"
   },
   "devDependencies": {
+    "co-mocha": "1.0.1",
     "mocha": "1.21.4",
     "should": "4.0.4"
   }

@@ -1,6 +1,8 @@
+//Enable generators for node v10.x.x
+require('gnode');
+
 var fs = require('fs-extra'),
     path = require('path'),
-    should = require('should'),
     cli = require('../../lib/cli'),
     dmn = require('../../index');
 

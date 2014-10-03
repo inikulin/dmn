@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
+//Enable generators for node v10.x.x
+require('gnode');
+
 var fs = require('fs'),
     path = require('path'),
     nopt = require('nopt'),
-    Q = require('q'),
     dmn = require('../index'),
     cli = require('../lib/cli');
+
 
 //Print version
 var packageFile = fs.readFileSync(path.join(__dirname, '../package.json')).toString();
