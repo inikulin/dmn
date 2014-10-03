@@ -4,60 +4,62 @@ var fs = require('co-fs-extra'),
     dmn = require('../../index');
 
 
+/**
+ * Test data
+ */
+var filesToClean = [
+        'node_modules/yo/.travis.yml',
+        'node_modules/awesome_package/.gitignore',
+        'node_modules/awesome_package/Gruntfile.js',
+        'node_modules/yo/node_modules/yoyo/yo.pyc',
+        'node_modules/yo/node_modules/yoyo/Changes'
+    ],
+
+    dirsToClean = [
+        'node_modules/yo/benchmark',
+        'node_modules/awesome_package/examples',
+        'node_modules/yo/node_modules/yoyo/test',
+        'node_modules/yo/node_modules/yoyo/.coverage_data/'
+    ],
+
+    filesToIgnore = [
+        '.npmignore',
+        'node_modules/yo/index.js',
+        'node_modules/yo/node_modules/yoyo/package.json',
+        'node_modules/awesome_package/Readme.md'
+    ],
+
+    dirsToIgnore = [
+        'node_modules/yo/lib',
+        'node_modules/yo/node_modules/yoyo/src',
+        'lib',
+        'test'
+    ];
+
+
+/**
+ * Setup test environment
+ */
+var tmpPath = path.join(__dirname, '../tmp');
+
+cli.silent = true;
+
+
+/**
+ * Wrap fs thunks, so they can be safely passed to Array.map()
+ * (learn more: http://www.wirfs-brock.com/allen/posts/166)
+ */
+function ensureDir(dir) {
+    return fs.ensureDir(dir, 0777);
+}
+
+function ensureFile(file) {
+    return fs.ensureFile(file);
+}
+
+
+
 describe('clean', function () {
-    /**
-     * Test data
-     */
-    var filesToClean = [
-            'node_modules/yo/.travis.yml',
-            'node_modules/awesome_package/.gitignore',
-            'node_modules/awesome_package/Gruntfile.js',
-            'node_modules/yo/node_modules/yoyo/yo.pyc',
-            'node_modules/yo/node_modules/yoyo/Changes'
-        ],
-
-        dirsToClean = [
-            'node_modules/yo/benchmark',
-            'node_modules/awesome_package/examples',
-            'node_modules/yo/node_modules/yoyo/test',
-            'node_modules/yo/node_modules/yoyo/.coverage_data/'
-        ],
-
-        filesToIgnore = [
-            '.npmignore',
-            'node_modules/yo/index.js',
-            'node_modules/yo/node_modules/yoyo/package.json',
-            'node_modules/awesome_package/Readme.md'
-        ],
-
-        dirsToIgnore = [
-            'node_modules/yo/lib',
-            'node_modules/yo/node_modules/yoyo/src',
-            'lib',
-            'test'
-        ];
-
-
-    /**
-     * Setup test environment
-     */
-    var tmpPath = path.join(__dirname, '../tmp');
-
-    cli.silent = true;
-
-
-    /**
-     * Wrap fs thunks, so they can be safely passed to Array.map()
-     * (learn more: http://www.wirfs-brock.com/allen/posts/166)
-     */
-    function ensureDir(dir) {
-        return fs.ensureDir(dir, 0777);
-    }
-
-    function ensureFile(file) {
-        return fs.ensureFile(file);
-    }
-
 
     /**
      * Test setup / teardown
