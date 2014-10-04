@@ -1,9 +1,11 @@
-//Just an easy way to update targets list and keep it nice and sorted
-//Usage: node add_targets target1 target2 ...
+/**
+ * Just an easy way to update targets list and keep it nice and sorted
+ */
 
 var path = require('path'),
     fs = require('fs'),
     targets = require('../lib/targets');
+
 
 var targetsToAdd = process.argv
     .slice(2)
@@ -14,9 +16,9 @@ var targetsToAdd = process.argv
         return targets.indexOf(newTarget) === -1;
     });
 
-if (!targetsToAdd.length) {
-    console.log('Nothing to add');
-}
+
+if (!targetsToAdd.length)
+    console.log('USAGE: node add_targets target1 target2 ...');
 
 else {
     targets = targets.concat(targetsToAdd).sort();

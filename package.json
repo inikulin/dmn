@@ -1,7 +1,7 @@
 {
   "name": "dmn",
   "description": "Node package dependency cleaner and .npmignore file generator.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
   "homepage": "http://inikulin.github.io/dmn/",
   "keywords": [
@@ -20,7 +20,7 @@
     }
   ],
   "bin": {
-    "dmn": "./bin/dmn.js"
+    "dmn": "./bin/dmn"
   },
   "main": "./index.js",
   "repository": {
@@ -32,16 +32,15 @@
   },
   "dependencies": {
     "char-spinner": "1.0.1",
-    "du": "0.1.0",
-    "fs-extra": "0.11.1",
-    "globby": "0.1.1",
-    "nopt": "3.0.1",
-    "q": "1.0.1",
-    "read": "1.0.5",
-    "gnode": "0.1.0",
     "co": "3.1.0",
     "co-fs-extra": "0.0.2",
-    "thunkify": "2.1.2"
+    "du": "0.1.0",
+    "globby": "0.1.1",
+    "gnode": "0.1.0",
+    "nopt": "3.0.1",
+    "read": "1.0.5",
+    "thunkify": "2.1.2",
+    "win-fork": "1.1.1"
   },
   "devDependencies": {
     "co-mocha": "1.0.1",

@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+
+var path = require('path'),
+    spawn = require('win-fork');
+
+
+/**
+ * Prepare spawn arguments
+ */
+var gnode = require.resolve('gnode/bin/gnode'),
+    dmnCli = path.join(__dirname, '../lib/cli'),
+    args = [dmnCli].concat(process.argv.slice(2));
+
+
+/**
+ * Spawn gnode
+ */
+spawn(gnode, args, { stdio: 'inherit' }).on('exit', process.exit);
