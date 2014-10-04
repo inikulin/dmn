@@ -5,9 +5,8 @@ var fs = require('fs'),
 
 
 /**
- * Enable generators for node v10.x.x and Mocha
+ * Enable generators for Mocha
  */
-require('gnode');
 require('co-mocha')(Mocha);
 
 
