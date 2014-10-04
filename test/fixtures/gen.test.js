@@ -97,8 +97,7 @@ describe('gen', function () {
                 '',
                 '.npmignore',
                 'coverage/',
-                'Gulpfile.js',
-                'gulpfile.js',
+                'Gulpfile.*',
                 'HISTORY',
                 'History'
             ].join('\r\n'));
@@ -114,7 +113,7 @@ describe('gen', function () {
                 '',
                 '.npmignore',
                 'coverage/',
-                'Gulpfile.js',
+                'Gulpfile.*',
                 'HISTORY'
             ].join('\r\n'));
         }
