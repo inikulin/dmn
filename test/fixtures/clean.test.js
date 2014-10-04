@@ -65,7 +65,7 @@ describe('clean', function () {
      * Test setup / teardown
      */
     beforeEach(function* () {
-        yield fs.ensureDir(tmpPath, 0777);
+        yield ensureDir(tmpPath);
         process.chdir(tmpPath);
     });
 

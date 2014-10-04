@@ -1,35 +1,52 @@
-//Enable generators for node v10.x.x
-require('gnode');
-
-var fs = require('fs-extra'),
+var fs = require('co-fs-extra'),
     path = require('path'),
     cli = require('../../lib/cli'),
     dmn = require('../../index');
 
 
+/**
+ * Setup test environment
+ */
+var tmpPath = path.join(__dirname, '../tmp');
+
+cli.silent = true;
+
+
+/**
+ * Wrap fs thunks, so they can be safely passed to Array.map()
+ * (learn more: http://www.wirfs-brock.com/allen/posts/166)
+ */
+function ensureDir(dir) {
+    return fs.ensureDir(dir, 0777);
+}
+
+function ensureFile(file) {
+    return fs.ensureFile(file);
+}
+
+
 describe('gen', function () {
-    var tmpPath = path.join(__dirname, '../tmp');
 
-    cli.silent = true;
-
-    //NOTE: ensureDir which can be safely passed to Array.forEach()
-    //(learn more: http://www.wirfs-brock.com/allen/posts/166)
-    function ensureDirSync(dir) {
-        fs.ensureDirSync(dir, 0777);
-    }
-
-    beforeEach(function () {
-        fs.ensureDirSync(tmpPath);
+    /**
+     * Test setup / teardown
+     */
+    beforeEach(function* () {
+        yield ensureDir(tmpPath);
         process.chdir(tmpPath);
     });
 
-    afterEach(function (done) {
+    afterEach(function* () {
         process.chdir(__dirname);
-        fs.remove(tmpPath, done);
+        yield fs.remove(tmpPath);
     });
 
-    it('should add ignores with respect to existing .npmignore file', function (done) {
-        var projectFiles = [
+
+    /**
+     * Tests
+     */
+    it('should add ignores with respect to existing .npmignore file', function* () {
+        var caseInsensitiveFS = true,
+            projectFiles = [
                 '.travis.yml',
                 'Gulpfile.js',
                 'index.js',
@@ -37,12 +54,14 @@ describe('gen', function () {
                 'HISTORY',
                 'Makefile'
             ],
+
             projectDirs = [
                 'lib',
                 'test',
                 'coverage',
                 'benchmark'
             ],
+
             srcIgnoreFile = [
                 '.travis.yml',
                 '!Makefile',
@@ -51,53 +70,60 @@ describe('gen', function () {
                 '!benchmark/'
             ].join('\r\n');
 
-        projectFiles.forEach(fs.ensureFileSync);
-        projectDirs.forEach(ensureDirSync);
-        fs.writeFileSync('.npmignore', srcIgnoreFile);
+        yield[
+            projectFiles.map(ensureFile),
+            projectDirs.map(ensureDir),
+            fs.writeFile('.npmignore', srcIgnoreFile)
+        ];
 
-        dmn.gen(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('OK: saved');
+        try {
+            yield fs.readFile('.NpMiGnore');
+        }
 
-            var ignoreFile = fs.readFileSync('.npmignore').toString();
+        catch (err) {
+            caseInsensitiveFS = false;
+        }
 
-            //NOTE: see comments in findPatternsToAdd() in ../../lib/gen.js
-            if (process.platform === 'win32') {
-                ignoreFile.should.eql([
-                    '.travis.yml',
-                    '!Makefile',
-                    'test',
-                    'example/',
-                    '!benchmark/',
-                    '',
-                    '.npmignore',
-                    'coverage/',
-                    'Gulpfile.js',
-                    'gulpfile.js',
-                    'HISTORY',
-                    'History'
-                ].join('\r\n'));
-            }
+        var status = yield dmn.gen(tmpPath, {force: true}),
+            ignoreFile = (yield fs.readFile('.npmignore')).toString();
 
-            else {
-                ignoreFile.should.eql([
-                    '.travis.yml',
-                    '!Makefile',
-                    'test',
-                    'example/',
-                    '!benchmark/',
-                    '',
-                    '.npmignore',
-                    'coverage/',
-                    'Gulpfile.js',
-                    'HISTORY'
-                ].join('\r\n'));
-            }
+        status.should.eql('OK: saved');
 
-            done();
-        });
+        if (caseInsensitiveFS) {
+            ignoreFile.should.eql([
+                '.travis.yml',
+                '!Makefile',
+                'test',
+                'example/',
+                '!benchmark/',
+                '',
+                '.npmignore',
+                'coverage/',
+                'Gulpfile.js',
+                'gulpfile.js',
+                'HISTORY',
+                'History'
+            ].join('\r\n'));
+        }
+
+        else {
+            ignoreFile.should.eql([
+                '.travis.yml',
+                '!Makefile',
+                'test',
+                'example/',
+                '!benchmark/',
+                '',
+                '.npmignore',
+                'coverage/',
+                'Gulpfile.js',
+                'HISTORY'
+            ].join('\r\n'));
+        }
     });
 
-    it('should create new .npmignore file if it does not exists', function (done) {
+
+    it('should create new .npmignore file if it does not exists', function* () {
         var projectDirs = [
             'lib',
             'test',
@@ -105,33 +131,31 @@ describe('gen', function () {
             'benchmark'
         ];
 
-        projectDirs.forEach(ensureDirSync);
+        yield projectDirs.map(ensureDir);
 
-        dmn.gen(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('OK: saved');
+        var status = yield dmn.gen(tmpPath, {force: true}),
+            ignoreFile = (yield fs.readFile('.npmignore')).toString();
 
-            var ignoreFile = fs.readFileSync('.npmignore').toString();
-
-            ignoreFile.should.eql([
-                '# Generated by dmn (https://github.com/inikulin/dmn)',
-                '',
-                '.npmignore',
-                'benchmark/',
-                'coverage/',
-                'test/'
-            ].join('\r\n'));
-
-            done();
-        });
+        status.should.eql('OK: saved');
+        ignoreFile.should.eql([
+            '# Generated by dmn (https://github.com/inikulin/dmn)',
+            '',
+            '.npmignore',
+            'benchmark/',
+            'coverage/',
+            'test/'
+        ].join('\r\n'));
     });
 
-    it('should not modify .npmignore if it is already perfect', function (done) {
+
+    it('should not modify .npmignore if it is already perfect', function* () {
         var projectDirs = [
                 'lib',
                 'test',
                 'coverage',
                 'benchmark'
             ],
+
             srcIgnoreFile = [
                 '.npmignore',
                 'coverage/',
@@ -139,83 +163,82 @@ describe('gen', function () {
                 'benchmark/'
             ].join('\r\n');
 
-        projectDirs.forEach(ensureDirSync);
-        fs.writeFileSync('.npmignore', srcIgnoreFile);
+        yield [
+            projectDirs.map(ensureDir),
+            fs.writeFile('.npmignore', srcIgnoreFile)
+        ];
 
-        dmn.gen(tmpPath, {force: true}).done(function (status) {
-            status.should.eql('OK: already-perfect');
+        var status = yield dmn.gen(tmpPath, {force: true}),
+            ignoreFile = (yield fs.readFile('.npmignore')).toString();
 
-            var ignoreFile = fs.readFileSync('.npmignore').toString();
+        status.should.eql('OK: already-perfect');
+        ignoreFile.should.eql(srcIgnoreFile);
 
-            ignoreFile.should.eql(srcIgnoreFile);
-
-            done();
-        });
     });
 
-    it('should cancel .npmignore file update on user demand if "force" flag disabled', function (done) {
+
+    it('should cancel .npmignore file update on user demand if "force" flag disabled', function* () {
         var projectDirs = [
                 'lib',
                 'test',
                 'coverage',
                 'benchmark'
             ],
+
             srcIgnoreFile = [
                 '.npmignore',
                 'benchmark/'
             ].join('\r\n');
 
-        projectDirs.forEach(ensureDirSync);
-        fs.writeFileSync('.npmignore', srcIgnoreFile);
+        yield [
+            projectDirs.map(ensureDir),
+            fs.writeFile('.npmignore', srcIgnoreFile)
+        ];
 
         cli.confirm = function (what, callback) {
             callback(false);
         };
 
-        dmn.gen(tmpPath, {force: false}).done(function (status) {
-            status.should.eql('OK: canceled');
+        var status = yield dmn.gen(tmpPath, {force: false}),
+            ignoreFile = (yield fs.readFile('.npmignore')).toString();
 
-            var ignoreFile = fs.readFileSync('.npmignore').toString();
-
-            ignoreFile.should.eql(srcIgnoreFile);
-
-            done();
-        });
+        status.should.eql('OK: canceled');
+        ignoreFile.should.eql(srcIgnoreFile);
     });
 
-    it('should update .npmignore file update on user confirmation if "force" flag disabled', function (done) {
+
+    it('should update .npmignore file update on user confirmation if "force" flag disabled', function* () {
         var projectDirs = [
                 'lib',
                 'test',
                 'coverage',
                 'benchmark'
             ],
+
             srcIgnoreFile = [
                 '.npmignore',
                 'benchmark/'
             ].join('\r\n');
 
-        projectDirs.forEach(ensureDirSync);
-        fs.writeFileSync('.npmignore', srcIgnoreFile);
+        yield [
+            projectDirs.map(ensureDir),
+            fs.writeFile('.npmignore', srcIgnoreFile)
+        ];
 
         cli.confirm = function (what, callback) {
             callback(true);
         };
 
-        dmn.gen(tmpPath, {force: false}).done(function (status) {
-            status.should.eql('OK: saved');
+        var status = yield dmn.gen(tmpPath, {force: false}),
+            ignoreFile = (yield fs.readFile('.npmignore')).toString();
 
-            var ignoreFile = fs.readFileSync('.npmignore').toString();
-
-            ignoreFile.should.eql([
-                '.npmignore',
-                'benchmark/',
-                '',
-                'coverage/',
-                'test/'
-            ].join('\r\n'));
-
-            done();
-        });
+        status.should.eql('OK: saved');
+        ignoreFile.should.eql([
+            '.npmignore',
+            'benchmark/',
+            '',
+            'coverage/',
+            'test/'
+        ].join('\r\n'));
     });
 });
