@@ -1,6 +1,7 @@
 var fs = require('fs'),
     path = require('path'),
-    Mocha = require('mocha');
+    Mocha = require('mocha'),
+    console = require('../lib/console_ex');
 
 
 /**
@@ -14,6 +15,12 @@ require('co-mocha')(Mocha);
  * Enable should.js
  */
 require('should');
+
+
+/**
+ * Disable project modules console output
+ */
+console.silent = true;
 
 
 /**

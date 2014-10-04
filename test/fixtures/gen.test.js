@@ -1,15 +1,13 @@
 var fs = require('co-fs-extra'),
     path = require('path'),
-    cli = require('../../lib/cli'),
+    console = require('../../lib/console_ex'),
     dmn = require('../../index');
 
 
 /**
- * Setup test environment
+ * Get test working directory path
  */
 var tmpPath = path.join(__dirname, '../tmp');
-
-cli.silent = true;
 
 
 /**
@@ -195,7 +193,7 @@ describe('gen', function () {
             fs.writeFile('.npmignore', srcIgnoreFile)
         ];
 
-        cli.confirm = function (what, callback) {
+        console.confirm = function (what, callback) {
             callback(false);
         };
 
@@ -225,7 +223,7 @@ describe('gen', function () {
             fs.writeFile('.npmignore', srcIgnoreFile)
         ];
 
-        cli.confirm = function (what, callback) {
+        console.confirm = function (what, callback) {
             callback(true);
         };
 

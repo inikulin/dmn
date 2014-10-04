@@ -7,13 +7,13 @@ var fs = require('fs'),
     path = require('path'),
     nopt = require('nopt'),
     dmn = require('../index'),
-    cli = require('../lib/cli');
+    cli = require('../lib/console_ex');
 
 
 //Print version
 var packageFile = fs.readFileSync(path.join(__dirname, '../package.json')).toString();
 
-cli.log('dmn@' + JSON.parse(packageFile).version);
+console_ex.log('dmn@' + JSON.parse(packageFile).version);
 
 //Usage
 var USAGE = [
@@ -62,9 +62,9 @@ var opts = nopt(OPTIONS, OPTIONS_SHORTHANDS, process.argv, 2),
 
 //Command sequence
 function whenError(err) {
-    cli.error(err);
-    cli.error('This should never happen!');
-    cli.error('Please submit an issue to: https://github.com/inikulin/dmn/issues');
+    console_ex.error(err);
+    console_ex.error('This should never happen!');
+    console_ex.error('Please submit an issue to: https://github.com/inikulin/dmn/issues');
     exit(1);
 }
 
@@ -84,7 +84,7 @@ function runCommand() {
 
 //Here we go...
 if (!cmds.length) {
-    cli.log(USAGE);
+    console_ex.log(USAGE);
     exit(0);
 }
 else
