@@ -1,4 +1,5 @@
 var fs = require('co-fs-extra'),
+    os = require('os'),
     path = require('path'),
     console = require('../../lib/console_ex'),
     dmn = require('../../index');
@@ -43,7 +44,11 @@ describe('gen', function () {
      * Tests
      */
     it('should add ignores with respect to existing .npmignore file', function* () {
-        var caseInsensitiveFS = true,
+        // We should keep original line endings, to test this we'll choose
+        // line endings for ignore file which are opposite to the
+        // current OS's line endings .
+        var srcEol = os.EOL === '\n' ? '\r\n' : '\n',
+            caseInsensitiveFS = true,
             projectFiles = [
                 '.travis.yml',
                 'Gulpfile.js',
@@ -66,7 +71,7 @@ describe('gen', function () {
                 'test',
                 'example/',
                 '!benchmark/'
-            ].join('\r\n');
+            ].join(srcEol);
 
         yield[
             projectFiles.map(ensureFile),
@@ -100,7 +105,7 @@ describe('gen', function () {
                 'Gulpfile.*',
                 'HISTORY',
                 'History'
-            ].join('\r\n'));
+            ].join(srcEol));
         }
 
         else {
@@ -115,7 +120,7 @@ describe('gen', function () {
                 'coverage/',
                 'Gulpfile.*',
                 'HISTORY'
-            ].join('\r\n'));
+            ].join(srcEol));
         }
     });
 
@@ -141,7 +146,7 @@ describe('gen', function () {
             'benchmark/',
             'coverage/',
             'test/'
-        ].join('\r\n'));
+        ].join(os.EOL));
     });
 
 
@@ -158,7 +163,7 @@ describe('gen', function () {
                 'coverage/',
                 'test/',
                 'benchmark/'
-            ].join('\r\n');
+            ].join(os.EOL);
 
         yield [
             projectDirs.map(ensureDir),
@@ -185,7 +190,7 @@ describe('gen', function () {
             srcIgnoreFile = [
                 '.npmignore',
                 'benchmark/'
-            ].join('\r\n');
+            ].join(os.EOL);
 
         yield [
             projectDirs.map(ensureDir),
@@ -215,7 +220,7 @@ describe('gen', function () {
             srcIgnoreFile = [
                 '.npmignore',
                 'benchmark/'
-            ].join('\r\n');
+            ].join(os.EOL);
 
         yield [
             projectDirs.map(ensureDir),
@@ -236,6 +241,6 @@ describe('gen', function () {
             '',
             'coverage/',
             'test/'
-        ].join('\r\n'));
+        ].join(os.EOL));
     });
 });
