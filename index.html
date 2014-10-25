@@ -42,7 +42,11 @@
 <li> If you get your local repo synced (e.g using Dropbox or Google Drive) <strong>then bloated dependencies make you unhappy</strong> (it takes so goddamn long to sync a big amount of smal useless files). </li>
 <li> If you distribute your project to end-user not via <code>npm</code> <strong>then bloated dependencies make you unhappy</strong>.</li>
 <li> If you are a good person who cares about others <strong>then bloated dependencies make you unhappy</strong>. Just imagine how much useless stuff which will never be used by anyone is fetched, served and stored by <code>npm</code> and e.g. <code>TravisCI</code>. Imagine how thousands of small useless files impacts installation time of your package. </li>
-</ul><hr><p><strong>dmn</strong> (<em>"<b>d</b>ependency <b>m</b>i<b>n</b>ifier" or "<b>d</b>amn <b>m</b>issing .<b>n</b>pmignore" or "<b>d</b>mn is a <b>m</b>eaningless <b>n</b>ame"</em>) - is a command line tool which will help you deal with bloated dependencies. It can clean your <code>node_modules</code> from stuff which you will never need. And it can gracefully generate <code>.npmignore</code> file for your project. Both operations based on <a href="https://github.com/inikulin/dmn/blob/master/lib/targets.js">list of ignore targets</a>. Send me a pull request If I missed something in this list.</p>
+</ul>
+
+<hr>
+
+<p><strong>dmn</strong> (<em>"<b>d</b>ependency <b>m</b>i<b>n</b>ifier" or "<b>d</b>amn <b>m</b>issing .<b>n</b>pmignore" or "<b>d</b>mn is a <b>m</b>eaningless <b>n</b>ame"</em>) - is a command line tool which will help you deal with bloated dependencies. It can clean your <code>node_modules</code> from stuff which you will never need. And it can gracefully generate <code>.npmignore</code> file for your project. Both operations are based on <a href="https://github.com/inikulin/dmn/blob/master/lib/targets.js">list of ignore targets</a>. Send me a pull request If I missed something in this list.</p>
 
 <h2>
 <a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h2>
