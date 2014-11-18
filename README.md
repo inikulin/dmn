@@ -69,7 +69,7 @@ $ cd <reponame> && npm install && dmn clean --f
 ```
 
 ##Questions or suggestions?
-If you have any questions, please feel free to create an issue [here on github](https://github.com/inikulin/ineed/issues).
+If you have any questions, please feel free to create an issue [here on github](https://github.com/inikulin/dmn/issues).
 
 
 ##Author
