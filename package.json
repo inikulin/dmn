@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "co-mocha": "1.0.1",
-    "mocha": "1.21.4",
+    "mocha": "^5.2.0",
     "should": "4.0.4"
   }
 }
