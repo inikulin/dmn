@@ -5,12 +5,6 @@ var fs = require('fs'),
 
 
 /**
- * Enable generators for Mocha
- */
-require('co-mocha')(Mocha);
-
-
-/**
  * Enable should.js
  */
 require('should');
