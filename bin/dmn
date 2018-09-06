@@ -7,12 +7,11 @@ var path = require('path'),
 /**
  * Prepare spawn arguments
  */
-var gnode = require.resolve('gnode/bin/gnode'),
-    dmnCli = path.join(__dirname, '../lib/cli'),
+var dmnCli = path.join(__dirname, '../lib/cli'),
     args = [dmnCli].concat(process.argv.slice(2));
 
 
 /**
- * Spawn gnode
+ * Spawn node
  */
-spawn(gnode, args, { stdio: 'inherit' }).on('exit', process.exit);
+spawn(process.execPath, args, { stdio: 'inherit' }).on('exit', process.exit);

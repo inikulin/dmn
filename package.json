@@ -28,7 +28,7 @@
     "url": "git://github.com/inikulin/dmn.git"
   },
   "scripts": {
-    "test": "./node_modules/.bin/gnode test/run_tests.js"
+    "test": "node test/run_tests.js"
   },
   "dependencies": {
     "char-spinner": "1.0.1",
@@ -36,7 +36,6 @@
     "co-fs-extra": "0.0.2",
     "du": "0.1.0",
     "globby": "^2.1.0",
-    "gnode": "0.1.0",
     "nopt": "3.0.1",
     "read": "1.0.5",
     "thunkify": "2.1.2",
