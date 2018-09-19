@@ -20,7 +20,7 @@
     }
   ],
   "bin": {
-    "dmn": "./bin/dmn"
+    "dmn": "./bin/cli.js"
   },
   "main": "./index.js",
   "repository": {
