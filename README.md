@@ -1,4 +1,4 @@
-#dmn
+# dmn
 [![Build Status](https://api.travis-ci.org/inikulin/dmn.svg)](https://travis-ci.org/inikulin/dmn)
 
 *Because I don't need your tests in my production!*
@@ -14,12 +14,12 @@ So:
 -----------------------------------------------------------------
 **dmn** (*"<b>d</b>ependency <b>m</b>i<b>n</b>ifier" or "<b>d</b>amn <b>m</b>issing .<b>n</b>pmignore" or "<b>d</b>mn is a <b>m</b>eaningless <b>n</b>ame"*) - is a command line tool which will help you deal with bloated dependencies. It can clean your `node_modules` from stuff which you will never need. And it can gracefully generate `.npmignore` file for your project. Both operations are based on [list of ignore targets](https://github.com/inikulin/dmn/blob/master/lib/targets.js). Send me a pull request If I missed something in this list.
 
-##Install
+## Install
 ```
 $ npm install -g dmn
 ```
 
-##Usage
+## Usage
 ```
   Usage: dmn <command(s)> [options]
         
@@ -34,7 +34,7 @@ $ npm install -g dmn
       -l, -list   :  list files that will be deleted by "clean" command
 ```
 
-##Examples
+## Examples
 *Generate .npmignore for your project:*
 ```
 $ cd <to_your_project>
@@ -68,10 +68,9 @@ $ git clone https://github.com/<username>/<reponame>
 $ cd <reponame> && npm install && dmn clean --f
 ```
 
-##Questions or suggestions?
+## Questions or suggestions?
 If you have any questions, please feel free to create an issue [here on github](https://github.com/inikulin/dmn/issues).
 
 
-##Author
+## Author
 [Ivan Nikulin](https://github.com/inikulin) (ifaaan@gmail.com)
-
