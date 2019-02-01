@@ -1,3 +1,11 @@
+2.1.0
+=====
+
+* `dmn will now remove .ts (TypeScript) and .map (sourcemap) files.
+* .editorconfig enhancements. (thanks @vladimyr!)
+* Remove unnecessary proxy launcher. (thanks @vladimyr!)
+* markdown fixes in README. (thanks @maxnordlund)
+
 2.0.0
 =====
 
