@@ -1,6 +1,7 @@
 var fs = require('co-fs-extra'),
     os = require('os'),
     path = require('path'),
+    co = require('co'),
     console = require('../../lib/console_ex'),
     dmn = require('../../index');
 
@@ -29,21 +30,21 @@ describe('gen', function () {
     /**
      * Test setup / teardown
      */
-    beforeEach(function* () {
+    beforeEach(co(function* () {
         yield ensureDir(tmpPath);
         process.chdir(tmpPath);
-    });
+    }));
 
-    afterEach(function* () {
+    afterEach(co(function* () {
         process.chdir(__dirname);
         yield fs.remove(tmpPath);
-    });
+    }));
 
 
     /**
      * Tests
      */
-    it('should add ignores with respect to existing .npmignore file', function* () {
+    it('should add ignores with respect to existing .npmignore file', co(function* () {
         // We should keep original line endings, to test this we'll choose
         // line endings for ignore file which are opposite to the
         // current OS's line endings .
@@ -122,10 +123,10 @@ describe('gen', function () {
                 'HISTORY'
             ].join(srcEol));
         }
-    });
+    }));
 
 
-    it('should create new .npmignore file if it does not exists', function* () {
+    it('should create new .npmignore file if it does not exists', co(function* () {
         var projectDirs = [
             'lib',
             'test',
@@ -147,10 +148,10 @@ describe('gen', function () {
             'coverage/',
             'test/'
         ].join(os.EOL));
-    });
+    }));
 
 
-    it('should not modify .npmignore if it is already perfect', function* () {
+    it('should not modify .npmignore if it is already perfect', co(function* () {
         var projectDirs = [
                 'lib',
                 'test',
@@ -176,10 +177,10 @@ describe('gen', function () {
         status.should.eql('OK: already-perfect');
         ignoreFile.should.eql(srcIgnoreFile);
 
-    });
+    }));
 
 
-    it('should cancel .npmignore file update on user demand if "force" flag disabled', function* () {
+    it('should cancel .npmignore file update on user demand if "force" flag disabled', co(function* () {
         var projectDirs = [
                 'lib',
                 'test',
@@ -206,10 +207,10 @@ describe('gen', function () {
 
         status.should.eql('OK: canceled');
         ignoreFile.should.eql(srcIgnoreFile);
-    });
+    }));
 
 
-    it('should update .npmignore file update on user confirmation if "force" flag disabled', function* () {
+    it('should update .npmignore file update on user confirmation if "force" flag disabled', co(function* () {
         var projectDirs = [
                 'lib',
                 'test',
@@ -242,5 +243,5 @@ describe('gen', function () {
             'coverage/',
             'test/'
         ].join(os.EOL));
-    });
+    }));
 });
