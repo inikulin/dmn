@@ -1,5 +1,6 @@
 var fs = require('co-fs-extra'),
     path = require('path'),
+    co = require('co'),
     console = require('../../lib/console_ex'),
     dmn = require('../../index');
 
@@ -62,21 +63,21 @@ describe('clean', function () {
     /**
      * Test setup / teardown
      */
-    beforeEach(function* () {
+    beforeEach(co(function* () {
         yield ensureDir(tmpPath);
         process.chdir(tmpPath);
-    });
+    }));
 
-    afterEach(function* () {
+    afterEach(co(function* () {
         process.chdir(__dirname);
         yield fs.remove(tmpPath);
-    });
+    }));
 
 
     /**
      * Tests
      */
-    it('should clean targets and ignore everything else', function* () {
+    it('should clean targets and ignore everything else', co(function* () {
         yield [
             filesToClean
                 .concat(filesToIgnore)
@@ -104,10 +105,10 @@ describe('clean', function () {
             .forEach(function (exists) {
                 exists.should.be.true;
             });
-    });
+    }));
 
 
-    it('should do nothing if there is no node_modules directory in the project', function* () {
+    it('should do nothing if there is no node_modules directory in the project', co(function* () {
         var projectFiles = [
                 'index.js',
                 'Readme.md',
@@ -134,10 +135,10 @@ describe('clean', function () {
             .forEach(function (exists) {
                 exists.should.be.true;
             });
-    });
+    }));
 
 
-    it('should do nothing if dependencies are already clean', function* () {
+    it('should do nothing if dependencies are already clean', co(function* () {
         var projectFiles = [
                 '.npmignore',
                 'node_modules/yo/index.js',
@@ -167,10 +168,10 @@ describe('clean', function () {
             .forEach(function (exists) {
                 exists.should.be.true;
             });
-    });
+    }));
 
 
-    it('should cancel cleaning on user demand if "force" flag disabled', function* () {
+    it('should cancel cleaning on user demand if "force" flag disabled', co(function* () {
         yield [
             filesToClean
                 .concat(filesToIgnore)
@@ -197,10 +198,10 @@ describe('clean', function () {
             .forEach(function (exists) {
                 exists.should.be.true;
             });
-    });
+    }));
 
 
-    it('should clean on user confirmation if "force" flag disabled', function* () {
+    it('should clean on user confirmation if "force" flag disabled', co(function* () {
         yield [
             filesToClean
                 .concat(filesToIgnore)
@@ -232,5 +233,5 @@ describe('clean', function () {
             .forEach(function (exists) {
                 exists.should.be.true;
             });
-    });
+    }));
 });
