@@ -37,8 +37,7 @@
     "du": "0.1.0",
     "fast-glob": "^2.2.6",
     "nopt": "3.0.1",
-    "read": "1.0.5",
-    "thunkify": "2.1.2"
+    "read": "1.0.5"
   },
   "devDependencies": {
     "mocha": "^5.2.0",
