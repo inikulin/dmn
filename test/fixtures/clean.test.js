@@ -10,6 +10,8 @@ var fs = require('co-fs-extra'),
  */
 var filesToClean = [
         'node_modules/yo/.travis.yml',
+        'node_modules/yo/.eslintignore',
+        'node_modules/yo/yarn.lock',
         'node_modules/awesome_package/.gitignore',
         'node_modules/awesome_package/Gruntfile.js',
         'node_modules/yo/node_modules/yoyo/yo.pyc',
