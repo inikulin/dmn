@@ -1,3 +1,13 @@
+2.2.1
+=====
+
+* Running `dmn clean` on very large setups could crash. (Thanks, @silverwind,
+for reporting!) The problem was in either the very old version of `globby` we
+were using or a dependency of it. `globby` is built on top of `fast-glob`. We
+weren't using any of the features that `globby` adds to `fast-glob`, so we
+switched to `fast-glob` and updated to the latest version. This fixed the
+problem.
+
 2.2.0
 =====
 
