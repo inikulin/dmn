@@ -15,6 +15,7 @@ var filesToClean = [
         'node_modules/awesome_package/.gitignore',
         'node_modules/awesome_package/Gruntfile.js',
         'node_modules/yo/node_modules/yoyo/yo.pyc',
+        'node_modules/eslint/node_modules/rxjs/_esm2015/internal/observable/dom/fetch.js.map',
         'node_modules/yo/node_modules/yoyo/Changes'
     ],
 
