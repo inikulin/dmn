@@ -91,9 +91,18 @@ describe('clean', function () {
                 .map(ensureDir)
         ];
 
+        var originalConsoleOk = console.ok;
+        var out = '';
+        console.ok = function(data) {
+            out += data;
+            originalConsoleOk(data);
+        }
         var status = yield dmn.clean(tmpPath, {force: true});
+        console.ok = originalConsoleOk;
 
         status.should.eql('OK: cleaned');
+
+        out.should.eql('Done! Your node_modules directory is now 16.00 Kb smaller.');
 
         (yield filesToClean
             .concat(dirsToClean)
