@@ -40,7 +40,7 @@
     "read": "1.0.5"
   },
   "devDependencies": {
-    "mocha": "^5.2.0",
+    "mocha": "^6.2.2",
     "should": "4.0.4"
   }
 }
