@@ -41,10 +41,10 @@ describe('gen', function () {
     });
 
 
-    /**
-     * Tests
-     */
-    it('should add ignores with respect to existing .npmignore file', co(function* () {
+    // /**
+    //  * Tests
+    //  */
+    it('should add ignores with respect to existing .npmignore file', co.wrap(function* () {
         // We should keep original line endings, to test this we'll choose
         // line endings for ignore file which are opposite to the
         // current OS's line endings .
@@ -126,7 +126,7 @@ describe('gen', function () {
     }));
 
 
-    it('should create new .npmignore file if it does not exists', co(function* () {
+    it('should create new .npmignore file if it does not exists', co.wrap(function* () {
         var projectDirs = [
             'lib',
             'test',
@@ -151,7 +151,7 @@ describe('gen', function () {
     }));
 
 
-    it('should not modify .npmignore if it is already perfect', co(function* () {
+    it('should not modify .npmignore if it is already perfect', co.wrap(function* () {
         var projectDirs = [
                 'lib',
                 'test',
@@ -180,7 +180,7 @@ describe('gen', function () {
     }));
 
 
-    it('should cancel .npmignore file update on user demand if "force" flag disabled', co(function* () {
+    it('should cancel .npmignore file update on user demand if "force" flag disabled', co.wrap(function* () {
         var projectDirs = [
                 'lib',
                 'test',
@@ -210,7 +210,7 @@ describe('gen', function () {
     }));
 
 
-    it('should update .npmignore file update on user confirmation if "force" flag disabled', co(function* () {
+    it('should update .npmignore file update on user confirmation if "force" flag disabled', co.wrap(function* () {
         var projectDirs = [
                 'lib',
                 'test',

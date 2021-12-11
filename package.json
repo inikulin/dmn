@@ -28,11 +28,11 @@
     "url": "git://github.com/inikulin/dmn.git"
   },
   "scripts": {
-    "test": "node test/run_tests.js"
+    "test": "rm -rf test/fixtures/node_modules && node test/run_tests.js"
   },
   "dependencies": {
     "char-spinner": "1.0.1",
-    "co": "3.1.0",
+    "co": "^4.6.0",
     "fast-glob": "^2.2.7",
     "fs-extra": "^10.0.0",
     "nopt": "3.0.1",

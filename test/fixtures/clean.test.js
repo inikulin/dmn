@@ -80,7 +80,7 @@ describe('clean', function () {
     /**
      * Tests
      */
-    it('should clean targets and ignore everything else', co(function* () {
+    it('should clean targets and ignore everything else', co.wrap(function* () {
         yield [
             filesToClean
                 .concat(filesToIgnore)
@@ -120,7 +120,7 @@ describe('clean', function () {
     }));
 
 
-    it('should do nothing if there is no node_modules directory in the project', co(function* () {
+    it('should do nothing if there is no node_modules directory in the project', co.wrap(function* () {
         var projectFiles = [
                 'index.js',
                 'Readme.md',
@@ -150,7 +150,7 @@ describe('clean', function () {
     }));
 
 
-    it('should do nothing if dependencies are already clean', co(function* () {
+    it('should do nothing if dependencies are already clean', co.wrap(function* () {
         var projectFiles = [
                 '.npmignore',
                 'node_modules/yo/index.js',
@@ -183,7 +183,7 @@ describe('clean', function () {
     }));
 
 
-    it('should cancel cleaning on user demand if "force" flag disabled', co(function* () {
+    it('should cancel cleaning on user demand if "force" flag disabled', co.wrap(function* () {
         yield [
             filesToClean
                 .concat(filesToIgnore)
@@ -213,7 +213,7 @@ describe('clean', function () {
     }));
 
 
-    it('should clean on user confirmation if "force" flag disabled', co(function* () {
+    it('should clean on user confirmation if "force" flag disabled', co.wrap(function* () {
         yield [
             filesToClean
                 .concat(filesToIgnore)
