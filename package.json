@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "char-spinner": "1.0.1",
-    "co": "3.1.0",
+    "co": "^4.6.0",
     "fast-glob": "^2.2.7",
     "fs-extra": "^10.0.0",
     "nopt": "3.0.1",
