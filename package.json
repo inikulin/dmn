@@ -28,7 +28,7 @@
     "url": "git://github.com/inikulin/dmn.git"
   },
   "scripts": {
-    "test": "node test/run_tests.js"
+    "test": "rm -rf test/fixtures/node_modules && node test/run_tests.js"
   },
   "dependencies": {
     "char-spinner": "1.0.1",
