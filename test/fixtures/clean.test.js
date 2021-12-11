@@ -1,4 +1,4 @@
-var fs = require('co-fs-extra'),
+var fs = require('fs-extra'),
     path = require('path'),
     co = require('co'),
     console = require('../../lib/console_ex'),

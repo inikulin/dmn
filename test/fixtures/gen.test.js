@@ -1,4 +1,4 @@
-var fs = require('co-fs-extra'),
+var fs = require('fs-extra'),
     os = require('os'),
     path = require('path'),
     co = require('co'),
