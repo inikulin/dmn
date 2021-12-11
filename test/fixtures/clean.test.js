@@ -66,15 +66,15 @@ describe('clean', function () {
     /**
      * Test setup / teardown
      */
-    beforeEach(co(function* () {
-        yield ensureDir(tmpPath);
+    beforeEach(async function () {
+        await ensureDir(tmpPath);
         process.chdir(tmpPath);
-    }));
+    });
 
-    afterEach(co(function* () {
+    afterEach(async function () {
         process.chdir(__dirname);
-        yield fs.remove(tmpPath);
-    }));
+        await fs.remove(tmpPath);
+    });
 
 
     /**
