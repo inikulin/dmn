@@ -1,3 +1,9 @@
+2.2.2
+=====
+
+* Fix cleaning of peer dependencies. (Thanks, @BridgeAR!)
+* Significantly improve cleanup performance. (Thanks, @BridgeAR!)
+
 2.2.1
 =====
 
