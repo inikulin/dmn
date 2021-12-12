@@ -102,5 +102,5 @@ else {
             yield exec(cmds.shift(), opts);
 
         exit(0);
-    })();
+    });
 }
