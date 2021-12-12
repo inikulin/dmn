@@ -28,7 +28,7 @@
     "url": "git://github.com/inikulin/dmn.git"
   },
   "scripts": {
-    "test": "rm -rf test/fixtures/node_modules test/tmp && node test/run_tests.js"
+    "test": "rm -rf test/fixtures/node_modules test/tmp && c8 node test/run_tests.js"
   },
   "dependencies": {
     "char-spinner": "1.0.1",
@@ -39,6 +39,7 @@
     "read": "^1.0.7"
   },
   "devDependencies": {
+    "c8": "^7.10.0",
     "mocha": "^9.1.3",
     "should": "^13.2.3"
   }
