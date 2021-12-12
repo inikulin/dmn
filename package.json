@@ -36,7 +36,7 @@
     "fast-glob": "^2.2.7",
     "fs-extra": "^10.0.0",
     "nopt": "3.0.1",
-    "read": "1.0.5"
+    "read": "^1.0.7"
   },
   "devDependencies": {
     "mocha": "^9.1.3",
