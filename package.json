@@ -35,7 +35,7 @@
     "co": "^4.6.0",
     "fast-glob": "^2.2.7",
     "fs-extra": "^10.0.0",
-    "nopt": "3.0.1",
+    "nopt": "^5.0.0",
     "read": "^1.0.7"
   },
   "devDependencies": {
