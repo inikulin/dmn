@@ -1,7 +1,8 @@
-3.0.0 (pending)
+3.0.0
 =====
 
-* Support for Node.js 10.x and newer only.
+* Support for Node.js 16.x and newer only.
+* Patterns now work with top-level dependencies. (Thanks, @targos!)
 
 2.2.2
 =====
