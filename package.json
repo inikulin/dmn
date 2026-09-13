@@ -1,7 +1,7 @@
 {
   "name": "dmn",
   "description": "Node package dependency cleaner and .npmignore file generator.",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "author": "Ivan Nikulin <ifaaan@gmail.com> (https://github.com/inikulin)",
   "homepage": "http://inikulin.github.io/dmn/",
   "keywords": [
