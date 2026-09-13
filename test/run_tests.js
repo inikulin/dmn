@@ -1,14 +1,16 @@
-var fs = require('fs'),
+const fs = require('fs'),
     path = require('path'),
-    Mocha = require('mocha'),
     console = require('../lib/console_ex');
+
+// Workaround for Node.js 22.x.
+(async function () {
+    const { default: Mocha } = await import('mocha');
 
 
 /**
  * Enable should.js
  */
 require('should');
-
 
 /**
  * Disable project modules console output
@@ -19,7 +21,7 @@ console.silent = true;
 /**
  * Load tests
  */
-var fixturesDir = path.join(__dirname, './fixtures'),
+const fixturesDir = path.join(__dirname, './fixtures'),
     mocha = new Mocha()
         .ui('bdd')
         .reporter('spec');
@@ -37,3 +39,4 @@ mocha.run(function (failed) {
         process.exit(failed);
     });
 });
+})();
