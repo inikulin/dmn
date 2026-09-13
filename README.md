@@ -68,6 +68,9 @@ $ git clone https://github.com/<username>/<reponame>
 $ cd <reponame> && npm install && dmn clean --f
 ```
 
+## Supported Node.js versions
+`dmn` supports Node.js versions 22.x and above.
+
 ## Questions or suggestions?
 If you have any questions, please feel free to create an issue [here on github](https://github.com/inikulin/dmn/issues).
 
